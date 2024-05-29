@@ -1,0 +1,9 @@
+digraph Btree {
+    node0 [shape=box][label="4 8 "]
+    node0 -> node1
+    node0 -> node2
+    node0 -> node3
+    node1 [shape=box][label="1 2 "]
+    node2 [shape=box][label="4 5 "]
+    node3 [shape=box][label="8 9 "]
+}

@@ -1,0 +1,9 @@
+digraph BTree {
+    node0 [shape=box][label="2 4 "];
+    node9680 [shape=box][label="0 1 "];
+    node0 -> node9680;
+    node9760 [shape=box][label="2 3 "];
+    node0 -> node9760;
+    node9840 [shape=box][label="6 8 "];
+    node0 -> node9840;
+}
