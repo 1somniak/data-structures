@@ -52,14 +52,14 @@ class Bplustree:
             if len(self.values) + 1 < self.order:
                 index = self.__binary_search(self.values, value)
                 self.values.insert(index, value)
-                return (None, None, None)
+                return None, None, None
             else:  # la feuille est pleine
                 index = self.__binary_search(self.values, value)
                 self.values.insert(index, value)
                 middle = self.order // 2
                 left = Bplustree(self.order, self.values[:middle], [])
                 right = Bplustree(self.order, self.values[middle:], [])
-                return (right.values[0], left, right)
+                return right.values[0], left, right
 
         else:  # il y a des enfants
             index = self.__binary_search(self.values, value)
@@ -70,7 +70,7 @@ class Bplustree:
                     self.values.insert(index, val)
                     self.childrens[index] = left
                     self.childrens.insert(index + 1, right)
-                return (None, None, None)
+                return None, None, None
             else:  # le noeud est plein
                 if val != None:
                     self.values.insert(index, val)
@@ -79,7 +79,7 @@ class Bplustree:
                     middle = self.order // 2
                     one = Bplustree(self.order, self.values[:middle],
                                     self.childrens[:(middle + 1)])
-                    two = Bplustree(self.order, self.values[middle:],
+                    two = Bplustree(self.order, self.values[middle + 1:],
                                     self.childrens[(middle + 1):])
                     return two.values[0], one, two  # ???
                 return None, None, None
