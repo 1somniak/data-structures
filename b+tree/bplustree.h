@@ -1,5 +1,7 @@
 #ifndef BPT_TREE
 #define BPT_TREE
+#define TRUE 1
+#define FALSE 0
 
 #include <stdint.h>
 #include <stdio.h>
@@ -15,17 +17,21 @@
 ** 5. A non-leaf node with k childrens contains k−1 keys.
 */
 
+struct Bplustree
+{
+    size_t order;
+    struct Node *root;
+};
+
 struct Node
 {
     size_t order;
 
     size_t nb_childrens;
-    struct Node *childrens;
+    struct Node **childrens;
 
     size_t nb_values;
     size_t *values;
-
-    struct Node *next;
 };
 
 /*
@@ -42,24 +48,30 @@ struct s_insert
     size_t value_to_add;
 };
 
-// Allocates a node without values.
-struct Node *bptree_new(size_t order);
+// Allocates a node without values and without allocating memory for childrens
+struct Bplustree *bptree_new(size_t order);
+
+// Allocate the mandatory memory for the childrens.
+void allocate_childrens(struct Node *bpt);
 
 // Check if b+ Tree is valid
-int bptree_isvalid(struct Node *bpt);
+int bptree_isvalid(struct Bplustree *bpt);
 
 // Display Node
-void display(struct Node *bpt);
-
-struct s_insert *aux_insert(struct Node *bpt, size_t value);
+void display(struct Bplustree *bpt);
 
 // Make a dicotomic search to find an element or to find where to place a new
 // element.
 size_t binary_search(size_t to_add, size_t *list, size_t nb_elements);
 
+void array_insert_size_t(size_t to_add, size_t index, size_t *list, size_t nb_elements);
+void array_insert_node(struct Node *to_add, size_t index, struct Node **list, size_t nb_childrens);
 
-// Inserts a value in b+ Tree
-void bptree_insert(struct Node *bpt, size_t value);
+//
+void export(struct Bplustree *bpt, char *path);
+
+//
+void insert(struct Bplustree *bpt, size_t element);
 
 
 #endif

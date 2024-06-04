@@ -120,8 +120,11 @@ class Bplustree:
                 self.root.values = [two.values[0]]"""
 
 if __name__ == '__main__':
-    bpt = Bplustree(6, 10)
-    bpt.insert(14)
+    bpt = Bplustree(3, 3)
+    for v in [10, 16, 19, 17, 23, 27, 28, 30]:
+        bpt.insert(v)
+
+    """bpt.insert(14)
     bpt.insert(12)
     bpt.insert(20)
     bpt.insert(35)
@@ -140,7 +143,7 @@ if __name__ == '__main__':
     bpt.insert(74)
     bpt.insert(75)
     bpt.insert(76)
-    bpt.insert(77)
+    bpt.insert(77)"""
     """bpt.insert(15)
     bpt.insert(16)
     bpt.insert(17)

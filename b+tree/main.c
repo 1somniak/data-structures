@@ -5,40 +5,42 @@
 int main(int argc, char *argv[])
 {
     printf("hello world\n");
-    struct Node *bpt = bptree_new(3);
-    display(bpt);
+    struct Bplustree *bpt = bptree_new(3);
+    /*bpt->nb_values = 2;
+    bpt->values[0] = 2;
+    bpt->values[1] = 4;
+    allocate_childrens(bpt);
+    struct Node *child1 = bptree_new(3);
+    struct Node *child2 = bptree_new(3);
+    struct Node *child3 = bptree_new(3);
+    child1->nb_values = 2;
+    child1->values[0] = 0;
+    child1->values[1] = 1;
+    child2->nb_values = 2;
+    child2->values[0] = 2;
+    child2->values[1] = 3;
+    child3->nb_values = 2;
+    child3->values[0] = 6;
+    child3->values[1] = 8;
 
-    /* size_t oui[10] = {1, 3, 6, 10, 33, 41, 65, 88, 113, 143}; */
+    bpt->childrens[0] = child1;
+    bpt->childrens[1] = child2;
+    bpt->childrens[2] = child3;
+    bpt->nb_childrens = 3;*/
 
-    /* printf("{ "); */
-    /* for (int i = 0; i < 10; i++){ */
-    /*     printf("%zu ", oui[i]); */
-    /* } */
-    /* printf("}\n"); */
-    /* printf("%zu\n", binary_search((size_t)atoi(argv[1]), oui, 10)); */
+    /* split(&bpt); */
 
-
-    for (int i = 1; i < argc; i++)
-    {
-        struct s_insert *test1 = aux_insert(bpt, atoi(argv[i]));
-
-        if (test1->cas != 0)
-        {
-            printf("bpt");
-            display(bpt);
-            printf("right: ");
-            display(test1->new_child);
-            printf("up: %zu \n", test1->value_to_add);
-        }
-        else
-        {
-            printf("bpt: ");
-            display(bpt);
-        }
-        printf("\n\n");
-    }
-    printf("\nnewvalue:\n");
-    display(bpt);
+    insert(bpt, 3);
+    insert(bpt, 10);
+    insert(bpt, 16);
+    insert(bpt, 19);
+    insert(bpt, 17);
+    insert(bpt, 23);
+    insert(bpt, 27);
+    insert(bpt, 28);
+    insert(bpt, 30);
+    printf("insertion done !\n");
+    export(bpt, "graph.dot");
 
 
     return 0;
