@@ -23,6 +23,7 @@ struct Bplustree
     struct Node *root;
 };
 
+// ouioui
 struct Node
 {
     size_t order;
@@ -32,6 +33,8 @@ struct Node
 
     size_t nb_values;
     size_t *values;
+
+    struct Node *next;
 };
 
 /*
@@ -51,6 +54,8 @@ struct s_insert
 // Allocates a node without values and without allocating memory for childrens
 struct Bplustree *bptree_new(size_t order);
 
+struct Node *node_new(size_t order);
+
 // Allocate the mandatory memory for the childrens.
 void allocate_childrens(struct Node *bpt);
 
@@ -60,6 +65,8 @@ int bptree_isvalid(struct Bplustree *bpt);
 // Display Node
 void display(struct Bplustree *bpt);
 
+void print_values(struct Bplustree *bpt);
+
 // Make a dicotomic search to find an element or to find where to place a new
 // element.
 size_t binary_search(size_t to_add, size_t *list, size_t nb_elements);
@@ -68,10 +75,13 @@ void array_insert_size_t(size_t to_add, size_t index, size_t *list, size_t nb_el
 void array_insert_node(struct Node *to_add, size_t index, struct Node **list, size_t nb_childrens);
 
 //
-void export(struct Bplustree *bpt, char *path);
+void export(struct Bplustree *bpt, char *path, int display_right_links);
 
-//
+struct Node *search_min(struct Bplustree *bpt, size_t value);
+
+// insert an argument in a provided bplustree struct
 void insert(struct Bplustree *bpt, size_t element);
 
+size_t bpt_remove(struct Bplustree *bpt, size_t value);
 
 #endif

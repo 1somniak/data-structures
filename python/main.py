@@ -1,5 +1,20 @@
-class Bplustree:
-    def __init__(self, order, values, childrens):
+
+def binary_search(array, value):
+    left = 0
+    right = len(array)
+    while left < right:
+        mid = left + (right - left) // 2
+        if value > array[mid]:
+            left = mid + 1
+        elif value < array[mid]:
+            right = mid
+        elif value == array[mid]:
+            return mid
+    return right
+
+
+class Node:
+    def __init__(self, order, values=[], childrens=[]):
         self.order = order
         self.values = values
         self.childrens = childrens
@@ -7,20 +22,7 @@ class Bplustree:
     def __str__(self):
         return str(self.values)
 
-    def __binary_search(self, array, value):
-        left = 0
-        right = len(array)
-        while left < right:
-            mid = left + (right - left) // 2
-            if value > array[mid]:
-                left = mid + 1
-            elif value < array[mid]:
-                right = mid
-            elif value == array[mid]:
-                return mid
-        return right
-
-    def export(self, filename, extension=""):
+    def to_dot(self, extension=""):
         s = "digraph Btree {\n"
         nodes = [self]
         index = 0
@@ -37,94 +39,133 @@ class Bplustree:
                 s += "\n"
             index += 1
         s += "}"
-        file = open(filename, "w")
-        file.write(s)
-        file.close()
+        return s
 
-    """
-    return type (int, Bplustree, Bplustree)
-    represents the values and the tree that can come back and must be inserted.
-    are represented at none if everything appends good.
-    """
+    def __add_value(self, value):
+        index = binary_search(self.values, value)
+        self.values.insert(index, value)
+        return None, None, None, None
 
-    def aux_insert(self, value):
-        if len(self.childrens) == 0:
-            if len(self.values) + 1 < self.order:
-                index = self.__binary_search(self.values, value)
-                self.values.insert(index, value)
-                return None, None, None
-            else:  # la feuille est pleine
-                index = self.__binary_search(self.values, value)
-                self.values.insert(index, value)
-                middle = self.order // 2
-                left = Bplustree(self.order, self.values[:middle], [])
-                right = Bplustree(self.order, self.values[middle:], [])
-                return right.values[0], left, right
-
-        else:  # il y a des enfants
-            index = self.__binary_search(self.values, value)
-            (val, left, right) = self.childrens[index].aux_insert(value)
-
-            if len(self.values) + 1 < self.order:  # le noeud n'est pas plein
-                if val != None:
-                    self.values.insert(index, val)
-                    self.childrens[index] = left
-                    self.childrens.insert(index + 1, right)
-                return None, None, None
-            else:  # le noeud est plein
-                if val != None:
-                    self.values.insert(index, val)
-                    self.childrens[index] = left
-                    self.childrens.insert(index + 1, right)
-                    middle = self.order // 2
-                    one = Bplustree(self.order, self.values[:middle],
-                                    self.childrens[:(middle + 1)])
-                    two = Bplustree(self.order, self.values[middle + 1:],
-                                    self.childrens[(middle + 1):])
-                    return two.values[0], one, two  # ???
-                return None, None, None
+    def __add_leaf_full(self, value):
+        index = binary_search(self.values, value)
+        self.values.insert(index, value)
+        middle = self.order // 2
+        left = Node(self.order, self.values[:middle])
+        right = Node(self.order, self.values[middle:])
+        return right.values[0], None, left, right
 
     def insert(self, value):
-        index = self.__binary_search(self.values, value)
-
-        if len(self.childrens) == 0:
-            if len(self.values) < self.order - 1:
-                self.values.insert(index, value)
-            else:
-                self.values.insert(index, value)
-                middle = self.order // 2
-                one = Bplustree(self.order, self.values[:middle],
-                                self.childrens[:(middle + 1)])
-                two = Bplustree(self.order, self.values[middle:],
-                                self.childrens[(middle + 1):])
-                self.childrens = [one, two]
-                self.values = [two.values[0]]
-            return
-
-        (val, left, right) = self.aux_insert(value)
-        if len(self.values) + 1 < self.order:
-            if val != None:
+        if len(self.childrens) == 0:  # no children (leaf)
+            if len(self.values) + 1 < self.order:  # leaf not full
+                return self.__add_value(value)
+            else:  # leaf full
+                return self.__add_leaf_full(value)
+        else:  # there is children (node)
+            index = binary_search(self.values, value)
+            (val, root, left, right) = self.childrens[index].insert(value)
+            if val is not None:
                 self.values.insert(index, val)
                 self.childrens[index] = left
                 self.childrens.insert(index + 1, right)
+
+            if len(self.values) == self.order:  # node null
+                middle = self.order // 2
+                one = Node(self.order, self.values[:middle], self.childrens[:(middle + 1)])
+                two = Node(self.order, self.values[middle + 1:], self.childrens[(middle + 1):])
+                return self.values[middle], None, one, two
+            return None, None, None, None
+
+    def remove(self, value):
+        if len(self.childrens) == 0:
+            index = binary_search(self.values, value)
+            if len(self.values) > self.order / 2 - 1:
+                pass
+            else:
+                pass
+
+    def search(self, value):
+        index = binary_search(self.values, value)
+        if len(self.childrens) == 0:
+            if self.values == value:
+                return self.values[index]
+            else:
+                return None
+        else:
+            return self.childrens[index].search(value)
+
+class Bplustree:
+    def __init__(self, order):
+        self.order = order
+        self.root = Node(order)
+
+    def export(self, filename, extension=""):
+        file = open(filename, "w")
+        file.write(self.root.to_dot(extension))
+        file.close()
+
+    def insert(self, value):
+        index = binary_search(self.root.values, value)
+
+        if len(self.root.childrens) == 0:
+            if len(self.root.values) < self.order - 1:
+                self.root.values.insert(index, value)
+            else:
+                self.root.values.insert(index, value)
+                middle = self.order // 2
+                one = Node(self.order, self.root.values[:middle], self.root.childrens[:(middle + 1)])
+                two = Node(self.order, self.root.values[middle:], self.root.childrens[(middle + 1):])
+                self.root.childrens = [one, two]
+                self.root.values = [two.values[0]]
+            return
+        (val, root, left, right) = self.root.insert(value)
+        if len(self.root.values) + 1 < self.order:
+            if val != None:
+                self.root.values.insert(index, val)
+                self.root.childrens[index] = left
+                self.root.childrens.insert(index + 1, right)
+
         else:
             if val != None:
-                self.values.insert(index, val)
-                self.childrens[index] = left
-                self.childrens.insert(index + 1, right)
-                middle = self.order // 2
-                one = Bplustree(self.order, self.values[:middle],
-                                self.childrens[:(middle + 1)])
-                two = Bplustree(self.order, self.values[middle:],
-                                self.childrens[(middle + 1):])
-                self.childrens = [one, two]
-                self.values = [two.values[0]]
+                self.root.values = [val]
+                self.root.childrens = [left, right]
+                return
+                self.root.childrens[index] = left
+                self.root.childrens.insert(index + 1, right)
+                """middle = self.order // 2
+                one = Node(self.order, self.root.values[:middle], self.root.childrens[:(middle + 1)])
+                two = Node(self.order, self.root.values[middle:], self.root.childrens[(middle + 1):])
+                self.root.childrens = [one, two]
+                self.root.values = [two.values[0]]"""
+
+    def search(self, value):
+        return self.root.search(value)
+
+    def remove(self, value):
+        if self.root.childrens == 0:
+            index = binary_search(self.root.values, value)
+            self.root.values.pop(index)
 
 
-bpt = Bplustree(3, [10], [])
-bpt.insert(14)
-bpt.insert(12)
-bpt.insert(20)
-bpt.insert(35)
+if __name__ == '__main__':
+    import random
+    print("hey!")
+    random.seed(1000)
+    bpt = Bplustree(3)
+    """if bpt.order == 30:
+        print(f"average insertion time : {1.9}s")
+    elif bpt.order == 10:
+        print(f"average insertion time : {8.8}s")
 
-bpt.export("graph.dot", "a")
+    L = list(range(100000))"""
+    for v in [3, 10, 16, 19, 17, 17, 17, 17, 17]:
+        bpt.insert(v)
+
+    """while len(L) != 0:
+        bpt.insert(L.pop(random.randint(0, len(L) - 1)))
+
+    for i in range(1000000):
+        a = bpt.search(i % 100000)
+
+    bpt.export("bplustree.txt")"""
+
+    bpt.export("graph.dot", "")

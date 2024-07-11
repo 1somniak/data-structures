@@ -1,0 +1,17 @@
+digraph BTree {
+    node0[shape=box][label="16"];
+    node6976[shape=box][label="10"];
+    node6752[shape=box][label="3"];
+    node6976 -> node6752;
+    node6848[shape=box][label="10"];
+    node6976 -> node6848;
+    node0 -> node6976;
+    node7552[shape=box][label="17 17"];
+    node7104[shape=box][label="16"];
+    node7552 -> node7104;
+    node7936[shape=box][label="17 17"];
+    node7552 -> node7936;
+    node7328[shape=box][label="17 19"];
+    node7552 -> node7328;
+    node0 -> node7552;
+}

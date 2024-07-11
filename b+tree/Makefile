@@ -1,6 +1,6 @@
 all:
-	gcc -g -o comp main.c bplustree.h bplustree.c -std=c99
-	./comp
+	gcc -g -o comp main.c bplustree.h basictools.c insertion.c search.c -std=c99
+	./comp no_right_links
 
-clear:
-	rm -rf comp *.dot *.png
+clean:
+	rm -rf comp *.dot *.png tags
