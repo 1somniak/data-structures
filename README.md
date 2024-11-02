@@ -25,4 +25,8 @@ insertion working
 just a python implementation of b+tree
 
 ### stack
-not working
+Working, implemented with a linked list.
+Change macro `TYPE` to edit the type. Default is `void *`.
+
+### queue
+Working, implemented with a linked list.
