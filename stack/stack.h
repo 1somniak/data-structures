@@ -1,21 +1,32 @@
-#ifndef STACK
-#define STACK
+#ifndef STACK_H
+#define STACK_H
 
-#include <stdlib.h>
+#include <stdbool.h>
 
-struct stack {
-    size_t capacity;
-    size_t index;
-    void** data;
+#define TYPE void *
+
+struct stack_item
+{
+    TYPE *data;
+    struct stack_item *next;
 };
 
+struct stack
+{
+    struct stack_item *head;
+    int size;
+};
 
-struct stack *stack_new();
+struct stack *stack_init(void);
 
-void push(struct stack *st, void *value);
+void stack_push(struct stack *s, TYPE e);
 
-void *pop(struct stack *st);
+TYPE *stack_pop(struct stack *s);
 
-void *top(struct stack *st);
+TYPE *stack_peek(struct stack *s);
 
-#endif
+void stack_clear(struct stack *s, bool free_data);
+
+void stack_destroy(struct stack *s, bool free_data);
+
+#endif /* !STACK_H */
